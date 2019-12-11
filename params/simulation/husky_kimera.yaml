@@ -1,0 +1,7 @@
+commands:
+  - "$(arg unity_namespace)Spawner spawn Husky $(arg name) $(arg x) $(arg y) $(arg z) $(arg roll) $(arg yaw) $(arg pitch)"
+  - '$(arg unity_namespace)Spawner spawn RGBCamera camera_left 0 0 0.5 0 90 0 $(arg name)'
+  - '$(arg unity_namespace)Spawner spawn RGBCamera camera_right 0.1 0 0.5 0 90 0 $(arg name)'
+  - '$(arg unity_namespace)Spawner spawn DepthCamera depth 0 0 0.5 0 90 0 $(arg name)'
+  - '$(arg unity_namespace)Spawner spawn SemanticCamera semantic 0 0 0.5 0 90 0 $(arg name)'
+  - '$(arg unity_namespace)Spawner spawn IMU imu 0 0 0.5 0 90 0 $(arg name)'

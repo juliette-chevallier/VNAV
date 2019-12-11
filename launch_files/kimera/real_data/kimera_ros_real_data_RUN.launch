@@ -1,0 +1,84 @@
+<launch>
+  <arg name="dataset_name" value="RealSense_IR"/>
+  <arg name="parallel" default="True" />
+  <arg name="online" default="True" />
+  <arg name="verbosity"    default="1" />
+
+  <arg name="log_output" default="true"/>
+  <arg name="log_output_path"
+       default="$(find kimera_ros)/output_logs/REAL_DATA/"
+       if="$(arg log_output)"/>
+  <arg name="log_gt_data" default="true"/>
+  <arg name="gt_topic" default="/cam_1/odom/sample"
+       if="$(arg log_gt_data)"/>
+  <!-- Set use_sim_time to true if you use rosbag with clock argument -->
+  <param name="use_sim_time" value="true" if="$(arg online)"/>
+
+  <!-- Only used when parsing a rosbag -->
+  <arg name="rosbag_path" default="/home/yunchang/data/kitti_2011_09_26_drive_0005_unsynced.bag"
+       unless="$(arg online)"/>
+
+  <!-- Subscribed Topics -->
+  <arg name="left_cam_topic"  value="/cam_2/infra1/image_rect_raw"/>
+  <arg name="right_cam_topic" value="/cam_2/infra2/image_rect_raw"/>
+  <arg name="imu_topic"       value="/cam_2/imu"/>
+
+  <!-- Frame IDs for Odometry -->
+  <arg name="world_frame_id"     default="world"/>
+  <arg name="base_link_frame_id" default="cam_2_link"/>
+  <arg name="map_frame_id"       default="map"/>
+  <arg name="left_cam_frame_id"  default="cam_2_infra1_optical_frame"/>
+  <arg name="right_cam_frame_id" default="cam_2_infra2_optical_frame"/>
+
+  <arg name="use_lcd" default="false"/>
+
+  <arg name="odometry_ground_truth_topic"       default="/cam_1/odom/sample"/>
+
+  <!-- Launch static TF node from base_link to velo_link -->
+  <!-- <node pkg="tf" type="static_transform_publisher" name="world_link_broadcaster0"
+    args="0 0 0 0 0 0 1 cam_2_link cam_2_depth_frame 10"/> 
+
+    <node pkg="tf" type="static_transform_publisher" name="world_link_broadcaster1"
+      args="0 0 0 -0.5 0.5 -0.5 0.5 cam_2_depth_frame cam_2_depth_optical_frame 10"/> 
+
+  <node pkg="tf" type="static_transform_publisher" name="world_link_broadcaster2"
+    args="-0.000195528948097 0.0150479134172 0.00036780294613 -0.00626605609432 -0.00379275600426 0.00369272311218 0.999966323376 cam_2_link cam_2_color_frame 10"/>
+
+  <node pkg="tf" type="static_transform_publisher" name="world_link_broadcaster3"
+    args="0 0 0 -0.5 0.5 -0.5 0.5 cam_2_aligned_depth_to_color_frame cam_2_color_optical_frame 10"/>
+
+  <node pkg="tf" type="static_transform_publisher" name="world_link_broadcaster4"
+    args="-0.000195528948097 0.0150479134172 0.00036780294613 -0.00626605609432 -0.00379275600426 0.00369272311218 0.999966323376 cam_2_link cam_2_aligned_depth_to_color_frame 10"/>
+
+  <node pkg="tf" type="static_transform_publisher" name="world_link_broadcaster5"
+    args="0 0 0 0 0 0 1 cam_2_link cam_2_infra1_frame 10"/>
+
+  <node pkg="tf" type="static_transform_publisher" name="world_link_broadcaster6"
+    args="0 0 0 -0.5 0.5 -0.5 0.5 cam_2_aligned_depth_to_infra1_frame cam_2_infra1_optical_frame 10"/>
+
+  <node pkg="tf" type="static_transform_publisher" name="world_link_broadcaster7"
+    args="0 0 0 0 0 0 1 cam_2_link cam_2_aligned_depth_to_infra1_frame 10"/>
+
+  <node pkg="tf" type="static_transform_publisher" name="world_link_broadcaster8"
+    args="0 -0.0498880259693 0 0 0 0 1 cam_2_link cam_2_infra2_frame 10"/>
+
+  <node pkg="tf" type="static_transform_publisher" name="world_link_broadcaster9"
+    args="0 0 0 -0.5 0.5 -0.5 0.5 cam_2_infra2_frame cam_2_infra2_optical_frame 10"/>
+
+  <node pkg="tf" type="static_transform_publisher" name="world_link_broadcaster10"
+    args="-0.0117399999872 -0.00552000012249 0.00510000018403 0 0 0 1 cam_2_link cam_2_gyro_frame 10"/>
+
+  <node pkg="tf" type="static_transform_publisher" name="world_link_broadcaster11"
+    args="0 0 0 -0.5 0.5 -0.5 0.5 cam_2_gyro_frame cam_2_gyro_optical_frame 10"/>
+
+  <node pkg="tf" type="static_transform_publisher" name="world_link_broadcaster12"
+    args="-0.0117399999872 -0.00552000012249 0.00510000018403 0 0 0 1 cam_2_link cam_2_accel_frame 10"/>
+
+  <node pkg="tf" type="static_transform_publisher" name="world_link_broadcaster13"
+    args="0 0 0 -0.5 0.5 -0.5 0.5 cam_2_accel_frame cam_2_accel_optical_frame 10"/> -->
+
+
+  <!-- Launch actual pipeline -->
+  <include file="$(find kimera_ros)/launch/real_data/kimera_ros_real_data_BACKEND.launch"
+           pass_all_args="true"/>
+</launch>

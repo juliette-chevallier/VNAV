@@ -1,0 +1,62 @@
+  <!-- This launch file runs Kimera-VIO-ROS for the DCIST simulator.
+  It is heavily based on the the launch file kimera_ros_tesse.launch
+  from the Kimera-Semantics package.-->
+
+<launch>
+  <arg name="dataset_name"   value="DCIST"/>
+  <arg name="verbosity"      default="1"/>
+  <arg name="backend_type"   default="1"/>
+  <arg name="online"         default="true"/>
+  <param name="use_sim_time" value="false"/>
+  <arg name="use_lcd" default="true"/>
+  <arg name="parallel"       default="true"/>
+
+  <!-- Set logging details -->
+  <arg name="log_output" default="true"/>
+  <arg name="log_output_path"
+       default="$(find kimera_ros)/output_logs/$(arg dataset_name)"
+       if="$(arg log_output)"/>
+  <arg name="log_gt_data" default="true"/>
+  <!-- husky/odom -->
+  <arg name="gt_topic"    default="husky/husky_velocity_controller/odom/"
+       if="$(arg log_gt_data)"/>
+
+  <!-- Set up static publishers to avoid problems with state TFs -->
+    <node pkg="tf" type="static_transform_publisher" name="world_link_broadcaster0"
+    args="0 0 0 0 0 0 1 husky husky/base_link 10"/>
+  <node pkg="tf" type="static_transform_publisher" name="world_link_broadcaster2"
+    args="0 0 .5 -1.97773339372e-10 4.72673566954e-11 -0.70710670948 0.70710682869 husky husky/imu 10"/>
+  <node pkg="tf" type="static_transform_publisher" name="world_link_broadcaster3"
+    args="0 0 .5 -0.500000059605 0.5 -0.499999940395 0.5 husky husky/camera_left 10"/>
+  <node pkg="tf" type="static_transform_publisher" name="world_link_broadcaster4"
+    args=".1 0 .5 -0.500000059605 0.5 -0.499999940395 0.5 husky husky/camera_right 10"/>
+  <node pkg="tf" type="static_transform_publisher" name="world_link_broadcaster5"
+    args="0 0 .5 -0.500000059605 0.5 -0.499999940395 0.5 husky husky/depth 10"/> 
+  <node pkg="tf" type="static_transform_publisher" name="world_link_broadcaster6"
+    args="0 0 .5 -0.500000059605 0.5 -0.499999940395 0.5 husky husky/semantic 10"/>
+
+  <!-- Change rosbag path if online argument is false -->
+  <arg name="rosbag_path"
+    default="/home/mstadler/2019-12-05-16-40-16_processed.bag"
+    unless="$(arg online)"/>
+
+  <!-- Frame IDs -->
+  <arg name="base_link_frame_id" value="husky"/>
+  <arg name="left_cam_frame_id"  value="husky/camera_left"/>
+  <arg name="right_cam_frame_id" value="husky/camera_right"/>
+
+    <!-- Subscriber Topics -->
+  <arg name="left_cam_topic"   value="/husky/camera_left/image_raw"/>
+  <arg name="right_cam_topic"  value="/husky/camera_right/image_raw"/>
+  <arg name="imu_topic"        value="/husky/imu"/>
+  <!-- Empty string ("") means no ground-truth available. Used for init if
+   requested to do ground-truth initialization. -->
+  <!-- <arg name="odometry_ground_truth_topic" value="$(arg gt_topic)"/> -->
+  <arg name="odometry_ground_truth_topic" value=""/>
+
+<!--  -->
+  <!-- Launch actual pipeline -->
+  <include file="$(find kimera_ros)/launch/kimera_ros.launch"
+    pass_all_args="true"/>
+
+</launch>
